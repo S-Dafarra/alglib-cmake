@@ -42,7 +42,7 @@ file(MAKE_DIRECTORY ${UNZIP_DIR})
 execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${ALGLIB_FULL_PATH} WORKING_DIRECTORY "${ALGLIB_DOWNLOAD_DIR}/src" RESULT_VARIABLE rv)
 
 if(NOT rv EQUAL 0)
-  message(FATAL_ERROR "Error while extracting '${ALGLIB_FULL_PATH}' failed")
+  message(FATAL_ERROR "Error while extracting '${ALGLIB_FULL_PATH}'.")
 endif()
 
 file(GLOB ALGLIB_HEADERS "${UNZIP_DIR}/cpp/src/*.h")
@@ -66,7 +66,6 @@ elseif(UNIX)
     if (${ARCHITECTURE} MATCHES "x86_64")
         set(COMPILER_OPTIONS ${COMPILER_OPTIONS} -DAE_CPU=AE_INTEL)
     endif()
-
 endif()
 
 
@@ -94,5 +93,3 @@ install(FILES ${CMAKE_BINARY_DIR}/ALGLIB-config.cmake DESTINATION ${CMAKE_INSTAL
 
 include(AddUninstallTarget)
 
-
-#devo ancora settare il find package e le impostazioni aggiuntive specificate nel readme e risolvere l'uninstall
