@@ -1,0 +1,16 @@
+# - Try to find alglib
+# Once done this will define
+#  ALGLIB_INCLUDE_DIRS - The alglib include directory
+#  ALGLIB_LIB - The libraries needed to use alglib
+#  ALGLIB_FOUND -  True if ALGLIB found.
+
+set(ALGLIB_FOUND TRUE)
+
+
+if(NOT TARGET ALGLIB)
+  include("${CMAKE_CURRENT_LIST_DIR}/ALGLIB.cmake")
+endif()
+
+set_and_check(ALGLIB_INCLUDE_DIRS  "@CMAKE_INSTALL_FULL_INCLUDEDIR@" )
+set_and_check(ALGLIB_LIB ALGLIB)
+

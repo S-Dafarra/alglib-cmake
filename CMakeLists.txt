@@ -2,7 +2,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 cmake_minimum_required(VERSION 2.8)
 
-project(alglib CXX)
+project(ALGLIB CXX)
+
+set(libraryname ALGLIB)
 
 include(AddWarningsConfigurationToTargets)
 
@@ -20,10 +22,10 @@ add_install_rpath_support(BIN_DIRS "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BIND
 
 include(ExternalProject)
 
-set(ALGLIB_VERSION "3.13.0")
-set(ALGLIB_FILE alglib-${ALGLIB_VERSION}.cpp.gpl.tgz)
+set(ALGLIB_VERSION_FILE "3.13.0" CACHE STRING "Version of ALGLIB.")
+set(ALGLIB_FILE alglib-${ALGLIB_VERSION_FILE}.cpp.gpl.tgz)
 set(ALGLIB_URI http://www.alglib.net/translator/re/${ALGLIB_FILE})
-set(ALGLIB_DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/alglibSource)
+set(ALGLIB_DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(ALGLIB_FULL_PATH ${ALGLIB_DOWNLOAD_DIR}/${ALGLIB_FILE})
 
 if (NOT EXISTS ${ALGLIB_FULL_PATH})
@@ -34,28 +36,63 @@ if (NOT EXISTS ${ALGLIB_FULL_PATH})
     endif()
 endif()
 
-file(REMOVE_RECURSE "${ALGLIB_DOWNLOAD_DIR}/src")
-file(MAKE_DIRECTORY ${ALGLIB_DOWNLOAD_DIR}/src)
+set (UNZIP_DIR "${ALGLIB_DOWNLOAD_DIR}/src")
+file(REMOVE_RECURSE ${UNZIP_DIR})
+file(MAKE_DIRECTORY ${UNZIP_DIR})
 execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${ALGLIB_FULL_PATH} WORKING_DIRECTORY "${ALGLIB_DOWNLOAD_DIR}/src" RESULT_VARIABLE rv)
 
 if(NOT rv EQUAL 0)
   message(FATAL_ERROR "Error while extracting '${ALGLIB_FULL_PATH}' failed")
 endif()
 
-file(COPY src-cmake/CMakeLists.txt DESTINATION ${ALGLIB_DOWNLOAD_DIR})
-file(COPY cmake/AddInstallRPATHSupport.cmake cmake/AddUninstallTarget.cmake cmake/AddWarningsConfigurationToTargets.cmake DESTINATION ${ALGLIB_DOWNLOAD_DIR}/cmake)
+file(GLOB ALGLIB_HEADERS "${UNZIP_DIR}/cpp/src/*.h")
+file(GLOB ALGLIB_SOURCES "${UNZIP_DIR}/cpp/src/*.cpp")
 
-file(MAKE_DIRECTORY ${ALGLIB_DOWNLOAD_DIR}/build)
+add_library(${libraryname} ${ALGLIB_HEADERS} ${ALGLIB_SOURCES})
 
-SET_DIRECTORY_PROPERTIES(PROPERTIES EP_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
+set(COMPILER_OPTIONS)
+
+if(MSVC OR MSYS OR MINGW)
+    set(COMPILER_OPTIONS ${COMPILER_OPTIONS} /Ox /DAE_OS=AE_WINDOWS)
+    execute_process( COMMAND wmic CPU get Name OUTPUT_VARIABLE CPU_NAME)
+    if (${CPU_NAME} MATCHES "Intel")
+        set(COMPILER_OPTIONS ${COMPILER_OPTIONS} /DAE_CPU=AE_INTEL)
+    endif()
+
+elseif(UNIX)
+    set(COMPILER_OPTIONS ${COMPILER_OPTIONS} -O3 -DAE_OS=AE_POSIX -pthread)
+    execute_process( COMMAND uname -m OUTPUT_VARIABLE ARCHITECTURE)
+
+    if (${ARCHITECTURE} MATCHES "x86_64")
+        set(COMPILER_OPTIONS ${COMPILER_OPTIONS} -DAE_CPU=AE_INTEL)
+    endif()
+
+endif()
 
 
-ExternalProject_Add(alglib
-                    SOURCE_DIR ${ALGLIB_DOWNLOAD_DIR}
-                    BINARY_DIR ${ALGLIB_DOWNLOAD_DIR}/build
-                    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
+target_compile_options(${libraryname} PUBLIC ${COMPILER_OPTIONS})
+
+# install
+set_property(TARGET ${libraryname} PROPERTY PUBLIC_HEADER ${ALGLIB_HEADERS})
+
+install(TARGETS ${libraryname}
+        EXPORT ${libraryname}
+        COMPONENT runtime
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT bin
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT shlib
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT lib
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(EXPORT ${libraryname}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${libraryname})
+
+configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/ALGLIB-config.cmake.in
+                              ${CMAKE_BINARY_DIR}/ALGLIB-config.cmake
+                              INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
+
+install(FILES ${CMAKE_BINARY_DIR}/ALGLIB-config.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
 
 include(AddUninstallTarget)
 
 
-#devo ancora settare il find package e le impostazioni aggiuntive specificate nel readme
+#devo ancora settare il find package e le impostazioni aggiuntive specificate nel readme e risolvere l'uninstall
