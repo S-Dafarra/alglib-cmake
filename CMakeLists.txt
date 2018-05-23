@@ -12,6 +12,20 @@ include(CMakePackageConfigHelpers)
 
 include(GNUInstallDirs)
 
+# ouptut paths
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
+
+# Build shared libs
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+if(MSVC)
+    set(CMAKE_DEBUG_POSTFIX "d")
+endif()
+
+option(BUILD_SHARED_LIBS "Build libraries as shared as opposed to static" ON)
+
 option(ENABLE_RPATH "Enable RPATH for this library" ON)
 mark_as_advanced(ENABLE_RPATH)
 include(AddInstallRPATHSupport)
@@ -19,6 +33,14 @@ add_install_rpath_support(BIN_DIRS "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BIND
                           LIB_DIRS "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}"
                           DEPENDS ENABLE_RPATH
                           USE_LINK_PATH)
+
+# Encourage user to specify a build type (e.g. Release, Debug, etc.), otherwise set it to Release.
+if(NOT CMAKE_CONFIGURATION_TYPES)
+  if(NOT CMAKE_BUILD_TYPE)
+      message(STATUS "Setting build type to 'Release' as none was specified.")
+      set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+  endif()
+endif()
 
 include(ExternalProject)
 
@@ -49,6 +71,7 @@ file(GLOB ALGLIB_HEADERS "${UNZIP_DIR}/cpp/src/*.h")
 file(GLOB ALGLIB_SOURCES "${UNZIP_DIR}/cpp/src/*.cpp")
 
 add_library(${libraryname} ${ALGLIB_HEADERS} ${ALGLIB_SOURCES})
+set_property(TARGET ${libraryname} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(COMPILER_OPTIONS)
 
@@ -86,10 +109,10 @@ install(EXPORT ${libraryname}
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${libraryname})
 
 configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/ALGLIB-config.cmake.in
-                              ${CMAKE_BINARY_DIR}/ALGLIB-config.cmake
+                              ${CMAKE_BINARY_DIR}/alglib-config.cmake
                               INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
 
-install(FILES ${CMAKE_BINARY_DIR}/ALGLIB-config.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
+install(FILES ${CMAKE_BINARY_DIR}/alglib-config.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
 
 include(AddUninstallTarget)
 
