@@ -51,3 +51,14 @@ export ALGLIB_DIR=path/where/alglib-cmake/is/installed
 ```
 
 See [CMake's reference documentation](https://cmake.org/cmake/help/latest/) if you need more info on the [`find_package`](https://cmake.org/cmake/help/latest/command/find_package.html) or [`target_link_libraries`](https://cmake.org/cmake/help/latest/command/target_link_libraries.html) CMake commands.
+
+## License 
+alglib-cmake is licensed under either the GNU Lesser General Public License v3.0 : 
+
+https://www.gnu.org/licenses/lgpl-3.0.html
+
+or the GNU Lesser General Public License v2.1 :
+
+https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+at your option.
