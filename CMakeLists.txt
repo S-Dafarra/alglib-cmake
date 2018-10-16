@@ -1,3 +1,11 @@
+# Copyright (C) 2018 Fondazione Istituto Italiano di Tecnologia
+#
+# Licensed under either the GNU Lesser General Public License v3.0 :
+# https://www.gnu.org/licenses/lgpl-3.0.html
+# or the GNU Lesser General Public License v2.1 :
+# https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+# at your option.
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 cmake_minimum_required(VERSION 2.8)
@@ -44,7 +52,8 @@ endif()
 
 include(ExternalProject)
 
-set(ALGLIB_VERSION_FILE "3.13.0" CACHE STRING "Version of ALGLIB.")
+set(ALGLIB_VERSION_FILE "3.14.0" CACHE STRING "Version of ALGLIB.")
+string(REPLACE "\"" "" ALGLIB_VERSION ${ALGLIB_VERSION_FILE})
 set(ALGLIB_FILE alglib-${ALGLIB_VERSION_FILE}.cpp.gpl.tgz)
 set(ALGLIB_URI http://www.alglib.net/translator/re/${ALGLIB_FILE})
 set(ALGLIB_DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR})
@@ -112,7 +121,9 @@ configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/ALGLIB-config.cmake.in
                               ${CMAKE_BINARY_DIR}/alglib-config.cmake
                               INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
 
-install(FILES ${CMAKE_BINARY_DIR}/alglib-config.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/alglib-configVersion.cmake VERSION ${ALGLIB_VERSION} COMPATIBILITY ExactVersion)
+
+install(FILES ${CMAKE_BINARY_DIR}/alglib-config.cmake ${CMAKE_BINARY_DIR}/alglib-configVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
 
 include(AddUninstallTarget)
 

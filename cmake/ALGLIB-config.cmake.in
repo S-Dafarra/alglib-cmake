@@ -1,9 +1,18 @@
+# Copyright (C) 2018 Fondazione Istituto Italiano di Tecnologia
+#
+# Licensed under either the GNU Lesser General Public License v3.0 :
+# https://www.gnu.org/licenses/lgpl-3.0.html
+# or the GNU Lesser General Public License v2.1 :
+# https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+# at your option.
+
 # - Try to find alglib
 # Once done this will define
 #  ALGLIB_INCLUDE_DIRS - The alglib include directory
 #  ALGLIB_LIB - The libraries needed to use alglib
 #  ALGLIB_FOUND -  True if ALGLIB found.
 
+set(ALGLIB_VERSION @ALGLIB_VERSION@)
 set(ALGLIB_FOUND TRUE)
 
 
@@ -13,4 +22,3 @@ endif()
 
 set_and_check(ALGLIB_INCLUDE_DIRS  "@CMAKE_INSTALL_FULL_INCLUDEDIR@" )
 set(ALGLIB_LIB ALGLIB)
-
