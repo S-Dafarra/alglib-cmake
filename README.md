@@ -44,8 +44,8 @@ target_include_directories(<target> PRIVATE ${ALGLIB_INCLUDE_DIRS})
 ...
 ```
 
-Note that unless you did not use the default value of `CMAKE_INSTALL_PREFIX`, the `<prefix>` in which you installed iDynTree will need to be appended to the `CMAKE_PREFIX_PATH` enviromental
-variable to ensure that `find_package` can find your iDynTree installation. Alternatively, you can specify the environmental variable
+Note that unless you did not use the default value of `CMAKE_INSTALL_PREFIX`, the `<prefix>` in which you installed ALGLIB will need to be appended to the `CMAKE_PREFIX_PATH` enviromental
+variable to ensure that `find_package` can find your ALGLIB installation. Alternatively, you can specify the environmental variable
 ```bash
 export ALGLIB_DIR=path/where/alglib-cmake/is/installed
 ```
