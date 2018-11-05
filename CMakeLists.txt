@@ -104,7 +104,11 @@ endif()
 target_compile_options(${libraryname} PUBLIC ${COMPILER_OPTIONS})
 
 # install
-set_property(TARGET ${libraryname} PROPERTY PUBLIC_HEADER ${ALGLIB_HEADERS})
+set_target_properties(${libraryname} PROPERTIES VERSION       ${ALGLIB_VERSION}
+                                                PUBLIC_HEADER "${ALGLIB_HEADERS}")
+
+target_include_directories(${libraryname} PUBLIC "$<BUILD_INTERFACE:${UNZIP_DIR}/cpp/src>"
+                                                 "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 
 install(TARGETS ${libraryname}
         EXPORT ${libraryname}

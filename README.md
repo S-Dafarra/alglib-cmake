@@ -38,14 +38,12 @@ Once the library is installed, you can link it using `CMake` with as little effo
 ...
 find_package(ALGLIB REQUIRED)
 ...
-target_link_libraries(<target> PRIVATE ${ALGLIB_LIB})
-...
-target_include_directories(<target> PRIVATE ${ALGLIB_INCLUDE_DIRS})
+target_link_libraries(<target> PRIVATE ALGLIB)
 ...
 ```
 
-Note that unless you did not use the default value of `CMAKE_INSTALL_PREFIX`, the `<prefix>` in which you installed iDynTree will need to be appended to the `CMAKE_PREFIX_PATH` enviromental
-variable to ensure that `find_package` can find your iDynTree installation. Alternatively, you can specify the environmental variable
+Note that unless you did not use the default value of `CMAKE_INSTALL_PREFIX`, the `<prefix>` in which you installed ALGLIB will need to be appended to the `CMAKE_PREFIX_PATH` enviromental
+variable to ensure that `find_package` can find your ALGLIB installation. Alternatively, you can specify the environmental variable
 ```bash
 export ALGLIB_DIR=path/where/alglib-cmake/is/installed
 ```
