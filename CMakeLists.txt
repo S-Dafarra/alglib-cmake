@@ -52,7 +52,7 @@ endif()
 
 include(ExternalProject)
 
-set(ALGLIB_VERSION_FILE "3.14.0" CACHE STRING "Version of ALGLIB.")
+set(ALGLIB_VERSION_FILE "3.16.0" CACHE STRING "Version of ALGLIB.")
 string(REPLACE "\"" "" ALGLIB_VERSION ${ALGLIB_VERSION_FILE})
 set(ALGLIB_FILE alglib-${ALGLIB_VERSION_FILE}.cpp.gpl.tgz)
 set(ALGLIB_URI http://www.alglib.net/translator/re/${ALGLIB_FILE})
