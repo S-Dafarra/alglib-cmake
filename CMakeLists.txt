@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(ALGLIB CXX)
 
-set(libraryname ALGLIB)
+set(LIBRARYNAME ALGLIB)
 
 include(AddWarningsConfigurationToTargets)
 
@@ -20,10 +20,10 @@ include(CMakePackageConfigHelpers)
 
 include(GNUInstallDirs)
 
-# ouptut paths
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
+# output paths
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
 
 # Build shared libs
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -79,8 +79,8 @@ endif()
 file(GLOB ALGLIB_HEADERS "${UNZIP_DIR}/cpp/src/*.h")
 file(GLOB ALGLIB_SOURCES "${UNZIP_DIR}/cpp/src/*.cpp")
 
-add_library(${libraryname} ${ALGLIB_HEADERS} ${ALGLIB_SOURCES})
-set_property(TARGET ${libraryname} PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_library(${LIBRARYNAME} ${ALGLIB_HEADERS} ${ALGLIB_SOURCES})
+set_property(TARGET ${LIBRARYNAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(COMPILER_OPTIONS)
 
@@ -101,33 +101,33 @@ elseif(UNIX)
 endif()
 
 
-target_compile_options(${libraryname} PUBLIC ${COMPILER_OPTIONS})
+target_compile_options(${LIBRARYNAME} PUBLIC ${COMPILER_OPTIONS})
 
 # install
-set_target_properties(${libraryname} PROPERTIES VERSION       ${ALGLIB_VERSION}
+set_target_properties(${LIBRARYNAME} PROPERTIES VERSION       ${ALGLIB_VERSION}
                                                 PUBLIC_HEADER "${ALGLIB_HEADERS}")
 
-target_include_directories(${libraryname} PUBLIC "$<BUILD_INTERFACE:${UNZIP_DIR}/cpp/src>"
+target_include_directories(${LIBRARYNAME} PUBLIC "$<BUILD_INTERFACE:${UNZIP_DIR}/cpp/src>"
                                                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 
-install(TARGETS ${libraryname}
-        EXPORT ${libraryname}
+install(TARGETS ${LIBRARYNAME}
+        EXPORT ${LIBRARYNAME}
         COMPONENT runtime
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT bin
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT shlib
         ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT lib
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(EXPORT ${libraryname}
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${libraryname})
+install(EXPORT ${LIBRARYNAME}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIBRARYNAME})
 
-configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/ALGLIB-config.cmake.in
-                              ${CMAKE_BINARY_DIR}/alglib-config.cmake
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ALGLIB-config.cmake.in
+                              ${CMAKE_CURRENT_BINARY_DIR}/alglib-config.cmake
                               INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
 
 write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/alglib-configVersion.cmake VERSION ${ALGLIB_VERSION} COMPATIBILITY ExactVersion)
 
-install(FILES ${CMAKE_BINARY_DIR}/alglib-config.cmake ${CMAKE_BINARY_DIR}/alglib-configVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/alglib-config.cmake ${CMAKE_CURRENT_BINARY_DIR}/alglib-configVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ALGLIB)
 
 include(AddUninstallTarget)
 
